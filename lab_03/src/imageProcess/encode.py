@@ -1,41 +1,41 @@
-from PIL import Image
+import PIL.Image
 
 from src.constants import MAX_LENGTH, RADIX
 
 
-def encodeImage(image, message="I love Python!"):
+def encodeImage(image: PIL.Image, message: str = "I love Python!") -> dict:
     '''
-    :param filename: name (path to) encoding image
-    :param length: len of message (num of
-    :param string: message
-    :return:
+    function for encode message in image (pillow)
     '''
     return_code = 0
-    height, width = image.size  # define width and height
-    pixels = image.load()  # load pixels values
+    height, width = image.size
+    pixels = image.load()
 
-    # message length must be less then size of image
     if len(message) > MAX_LENGTH:
         return_code = 1
     else:
+        # начинаем с единицы, так как в нулевой пиксель кодируется размер строки
         for i in range(1, len(message) + 1):
 
+            # -1 так как сообщение нужно читать сначала
             letter_code = ord(message[i - 1])
-
+            # Так как у нас 8 бит, то нужно 3 пикселя по 3 цвета для кодирования
             for offset in range(3):
+                # * 3 для перемещения сразу по трем пикселям
+                # + offset для тех 3 пикселей внутри
                 x = (i * 3 + offset) % width
                 y = (i * 3 + offset) // width
                 pixel = pixels[y, x]
                 new_pixel = [0, 0, 0]
 
                 for color in range(len(pixel)):
+                    # постепенный перевод слова в двоичную систему счисления
                     bit = letter_code % RADIX
                     letter_code //= RADIX
-                    new_pixel[color] = pixel[color] // 2 * 2 + bit
-
-                # we don't change last color of third pixel
-                if offset == 2:
-                    new_pixel[2] = pixel[2]
+                    # обнуление младшего бита
+                    new_pixel[color] = pixel[color] // 2 * 2
+                    # Закодируем бит в младший бит цвета пикселя
+                    new_pixel[color] += bit
 
                 # change pixel
                 image.putpixel((y, x), tuple(new_pixel))

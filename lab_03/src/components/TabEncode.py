@@ -13,22 +13,24 @@ class TabEncode(QWidget):
         self.parent = parent
         self.layout = QGridLayout()
         self.setLayout(self.layout)
-        self.initGui()
         self.initVariables()
+        self.initGui()
         self.connectBtns()
 
     def initVariables(self):
         self.dlg = QFileDialog()
         self.filename = ''
-        self.image = None  # open image
+        self.image = None
+        self.width = 640
 
     def initGui(self):
+        self.setWindowTitle('Coding Image')
+
         self.input = QLineEdit('decode text')
         self.layout.addWidget(self.input, 0, 0)
 
         self.openFileBtn = QPushButton('Choose file')
         self.layout.addWidget(self.openFileBtn, 1, 0)
-
         self.EncodeBtn = QPushButton('Encode image')
         self.layout.addWidget(self.EncodeBtn, 2, 0)
         self.EncodeBtn.setDisabled(True)
@@ -36,6 +38,10 @@ class TabEncode(QWidget):
         self.saveFileBtn = QPushButton('save file')
         self.layout.addWidget(self.saveFileBtn, 3, 0)
         self.saveFileBtn.setDisabled(True)
+        
+        # create label for image
+        self.input_image_label = QLabel()
+        self.layout.addWidget(self.input_image_label, 4, 0)
 
     def connectBtns(self):
         self.openFileBtn.clicked.connect(lambda: self.getFilename())
@@ -50,7 +56,12 @@ class TabEncode(QWidget):
         )[0]
         if self.filename:
             self.image = Image.open(self.filename)
+            self.openFileBtn.setText(self.filename.split('/')[-1])
             self.EncodeBtn.setEnabled(True)
+            self.pixmap = QPixmap(self.filename)
+            self.pixmap = self.pixmap.scaledToWidth(self.width)
+            # show image on UI
+            self.input_image_label.setPixmap(self.pixmap)
 
     def encodeMessage(self):
         message = self.input.text()
