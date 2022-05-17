@@ -1,8 +1,6 @@
 from PIL import Image
 
-
-MAX_LENGTH = 256
-RADIX = 2
+from src.constants import MAX_LENGTH, RADIX
 
 
 def encodeImage(image, message="I love Python!"):
@@ -49,39 +47,3 @@ def encodeImage(image, message="I love Python!"):
         'image': image,
         'code': return_code
     }
-
-
-def decodeImage(image):
-    message = ''
-    return_code = 0
-
-    height, width = image.size  # define width and height
-    pixels = image.load()  # load pixels values
-    length = image.getpixel((0, 0))[0]  # we encoded length to first component
-    for i in range(1, length + 1):
-        code = ''
-
-        for offset in range(3):
-            y = (i * 3 + offset) // width
-            x = (i * 3 + offset) % width
-            pixel = pixels[y, x]
-
-            for color in range(len(pixel)):
-                code += str(pixel[color] % RADIX)
-
-        # we don't use last color of pixel
-        code = code[:-1][::-1]
-
-        # change string
-        message = message + chr(int(code, 2))
-
-    return {
-        'message': message,
-        'code': return_code
-    }
-
-
-if __name__ == '__main__':
-    image = Image.open('src/assets/2.bmp')
-    print(encodeImage(image))
-    print(decodeImage(image))

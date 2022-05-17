@@ -1,0 +1,2 @@
+MAX_LENGTH = 256
+RADIX = 2

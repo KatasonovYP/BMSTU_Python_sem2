@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 
 from PIL import Image
 
-from src.processImage import encodeImage, decodeImage
+from src.imageProcess import encodeImage
 
 
 class TabEncode(QWidget):
@@ -44,6 +44,7 @@ class TabEncode(QWidget):
 
     def getFilename(self):
         self.filename = self.dlg.getOpenFileName(
+            caption='Open image for encode',
             filter='*.bmp',
             directory='src/assets'
         )[0]
@@ -59,7 +60,11 @@ class TabEncode(QWidget):
             self.saveFileBtn.setEnabled(True)
 
     def saveFile(self):
-        filename = self.dlg.getSaveFileName(self, 'save file')[0]
+        filename = self.dlg.getSaveFileName(
+            caption='Save encoded image',
+            filter='*.bmp',
+            directory='src/assets'
+        )[0]
         if not filename:
             filename = 'untitled'
         filename = f'{filename.split(".")[0]}.bmp'

@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 
 from PIL import Image
 
-from src.processImage import decodeImage
+from src.imageProcess import decodeImage
 
 
 class TabDecode(QWidget):
@@ -40,6 +40,7 @@ class TabDecode(QWidget):
 
     def getFilename(self):
         self.filename = self.dlg.getOpenFileName(
+            caption='Open image for decode',
             filter='*.bmp',
             directory='src/assets'
         )[0]
