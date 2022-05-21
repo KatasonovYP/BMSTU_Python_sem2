@@ -2,12 +2,15 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+from itertools import permutations
+
+from src.triangle import findMaxAngle
+
 
 class Paint(QWidget):
     def __init__(self):
         super().__init__()
-        self.setMinimumSize(600, 300)
-        self.setMinimumSize(700, 300)
+        self.setFixedSize(600, 300)
         self.ansTriangle = None
         self.points = []
     
@@ -32,16 +35,38 @@ class Paint(QWidget):
         painter = QPainter(self)
         painter.setPen(QPen(Qt.black, 5.0))
 
+        # Закрасить фон холстаы
         self.drawBrushes(painter)
 
         # Рисование точки
-
         for point in self.points:
             painter.drawEllipse(*point, 2, 2)
 
         # Если искомый треугольник существует, рисуем его
-        if self.ansTriangle is not None:
-            self.paintTriangle(painter, self.ansTriangle)
+        self.drawBestTriangle(painter)
+
+    def drawBestTriangle(self, painter):
+        if len(self.points) >= 3:
+            maxAngle = 0
+            bestPoints = ()
+            data = list(permutations(self.points, r=3))
+            for a, b, c in data:
+                tmp = findMaxAngle(a, b, c)
+                if tmp > maxAngle:
+                    maxAngle = tmp
+                    bestPoints = (a, b, c)
+            if bestPoints:
+                self.drawTriangle(bestPoints, painter)
+
+    
+    def drawTriangle(self, points, painter):
+        a, b, c = points
+        painter.drawLine(*a, *b)
+        painter.drawLine(*a, *c)
+        painter.drawLine(*b, *c)
+
+
+
 
     def drawBrushes(self, qp):
         '''Закрасить фон холста'''

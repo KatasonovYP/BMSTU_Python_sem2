@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
 
     def initUI(self):
         self.painter = Paint()
-        self.layout.addWidget(self.painter, 0, 0, 1, 4)
+        self.layout.addWidget(self.painter, 0, 0, 1, 3)
 
         self.inputX = QLineEdit()
         self.inputX.setPlaceholderText('Введите X')
@@ -29,9 +29,6 @@ class MainWindow(QMainWindow):
 
         self.addBtn = QPushButton('Добавить точку')
         self.layout.addWidget(self.addBtn, 1, 2)
-
-        self.TriangleBtn = QPushButton('Нарисовать треугольники')
-        self.layout.addWidget(self.TriangleBtn, 1, 3)
 
     def connectBtns(self):
         self.addBtn.clicked.connect(lambda: self.addPoint())
