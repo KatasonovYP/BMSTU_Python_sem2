@@ -43,20 +43,21 @@ class Paint(QWidget):
             painter.drawEllipse(*point, 2, 2)
 
         # Если искомый треугольник существует, рисуем его
-        self.drawBestTriangle(painter)
+        painter.setPen(QPen(Qt.red, 1.0))
+        try:
+            self.drawBestTriangle(painter)
+        except:
+            pass
 
     def drawBestTriangle(self, painter):
-        if len(self.points) >= 3:
-            maxAngle = 0
-            bestPoints = ()
-            data = list(permutations(self.points, r=3))
-            for a, b, c in data:
-                tmp = findMaxAngle(a, b, c)
-                if tmp > maxAngle:
-                    maxAngle = tmp
-                    bestPoints = (a, b, c)
-            if bestPoints:
-                self.drawTriangle(bestPoints, painter)
+        maxAngle = 0
+        bestPoints = ()
+        for a, b, c in permutations(self.points, r=3):
+            tmp = findMaxAngle(a, b, c)
+            if tmp > maxAngle:
+                maxAngle = tmp
+                bestPoints = (a, b, c)
+        self.drawTriangle(bestPoints, painter)
 
     
     def drawTriangle(self, points, painter):
